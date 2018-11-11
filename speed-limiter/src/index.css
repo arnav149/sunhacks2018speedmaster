@@ -1,7 +1,6 @@
 body {
-
-}
-
+ font-family:"Courier-New";
+background-image: linear-gradient(to right, #3131ba, #0075f5, #00a4ef, #00cbb8, #12eb71);}
 Typography {
     padding: 3em;
 }

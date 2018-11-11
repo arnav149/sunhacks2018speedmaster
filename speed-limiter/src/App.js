@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Entry from './Entry';
 import Bar from './Bar';
-import MapWithControlledZoom from './ReactMap';
-import Paper from '@material-ui/core/Paper'
+import Particles from 'react-particles-js';
 
 class App extends Component {
   render() {
@@ -11,10 +10,27 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
             <Bar/>
+            <Particles className='parti'
+     params={{
+         particles: {
+           number:{
+             value:40,
+             density:{
+               enable:true,
+               value_area:800
+             }
+           },
+          move:
+          {
+            enable:true,
+            speed:7
+          },
+
+         }
+       }}/>
             <p/>
             <Entry/>
             <p/>
-            <Paper><MapWithControlledZoom/></Paper>
         </header>
       </div>
     );
