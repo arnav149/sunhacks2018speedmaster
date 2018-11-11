@@ -7,83 +7,37 @@ import React, { Component } from "react";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper'
-import axios from 'axios';
+import Paper from '@material-ui/core/Paper';
+import MapContainer from './Map';
+import Geocode from 'react-geocode';
+
+Geocode.setApiKey('AIzaSyApsiMJBsI6piScQHEWkYOEbUU211S2M30');
 
 class Entry extends Component {
-    constructor() {
-        super();
-        this.state = {
-            latitude:0,
-            longitude:0,
-            startInput: ''};
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
 
-    handleSubmit(){
-    }
+  constructor()
+  {
+    super();
+    this.state={
+    end:'',
+    endlat:0,
+    endlong:0
+   }
+  }
 
-    componentDidMount(){
-        /*axios({
-            method: 'get',
-            url: '/parent',
-            timeout: 5000 })
-            .then(res => {
 
-                console.log(res);
-                this.reverseGeocode();
+  onEndChange=(event)=>{
+    this.setState({end:event.target.value})
+  }
 
-            })
-            .catch(err => {
-                console.error('ERROR:', err);
-            });*/
-        let loc = {
-            longitude:this.state.longitude,
-            latitude:this.state.latitude
-        };
-
-        let latlng = loc.latitude.toString() + ',' + loc.longitude.toString();
-        let key = 'AIzaSyC4xYqoJ2z76xP1hEu8B4AG9otpRL7mxec';
-        var url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latlng + '&key=' + key;
-        axios({
-            method: 'get',
-            url: url,
-            timeout: 5000
-        })
-            .then(res => {
-                console.log(res.data.results[0].formatted_address);
-                let addr = res.data.results[0].formatted_address;
-                this.setState({ startInput: addr });
-            })
-            .catch(err => {
-                console.error('ERROR:', err);
-            });
-    }
-
-    reverseGeocode(){
-        let loc = {
-            longitude:33.4162697,
-            latitude:-111.9468267
-        };
-
-        let latlng = loc.latitude.toString() + ',' + loc.longitude.toString();
-        let key = 'AIzaSyC4xYqoJ2z76xP1hEu8B4AG9otpRL7mxec';
-        var url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latlng + '&key=' + key;
-        axios({
-            method: 'get',
-            url: url,
-            timeout: 5000
-        })
-            .then(res => {
-                console.log(res.data.results[0].formatted_address);
-                let addr = res.data.results[0].formatted_address;
-                this.setState({ startInput: addr });
-            })
-            .catch(err => {
-                console.error('ERROR:', err);
-            });
-    }
-
+  onClickChange=()=>{
+    Geocode.fromAddress(`${this.state.end}`)
+    .then(res=>{
+      this.setState({endlat:res.results[0].geometry.location.lat,endlong:res.results[0].geometry.location.lng})
+    })
+    console.log(this.state.endlat,this.state.endlong)
+    //this.setState({endlat:data.candidates[0].geometry.location.lat,endlong:data.candidates[0].geometry.location.long})
+  }
 
     render() {
         return (
@@ -91,23 +45,13 @@ class Entry extends Component {
                 <Typography component="h2" variant="h5" gutterBottom>
                     Enter desired destination below
                 </Typography>
-                <form onSubmit={this.handleSubmit}>
-                    <TextField
-                        id="startInput"
-                        value={this.state.startInput}
-                        label="Start"
-                        margin="normal"
-                        InputProps={{
-                            readOnly: true,
-                        }}/>
-                    <p/>
                     <TextField
                         id="end"
                         label="Destination"
-                        margin="normal"/>
+                        margin="normal" onChange={this.onEndChange}/>
                     <p/>
-                    <Button type="submit" variant="contained" color="primary" onClick={()=>{this.handleClick()}}>Go</Button>
-                </form>
+                    <Button type="submit" variant="contained" color="primary" onClick={this.onClickChange}>Go</Button>
+                    <Paper><MapContainer endlat={this.state.endlat} endlong={this.state.endlong}/></Paper>
             </Paper>
         );
     }
